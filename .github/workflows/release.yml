@@ -36,7 +36,7 @@ jobs:
           $hash = (Get-FileHash obsigon-windows-amd64.zip -Algorithm SHA256).Hash.ToLowerInvariant()
           "$hash *obsigon-windows-amd64.zip" | Set-Content -Encoding ascii obsigon-windows-amd64.zip.sha256
       - name: Publicar en la release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: |
             obsigon-windows-amd64.exe
