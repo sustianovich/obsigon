@@ -1,0 +1,12 @@
+{
+  "name": "obsigon-frontend-tests",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "node scripts/check-js.mjs",
+    "test": "node --test app/static/*.test.mjs"
+  },
+  "devDependencies": {
+    "linkedom": "0.18.13"
+  }
+}

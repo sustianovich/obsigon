@@ -1,0 +1,11 @@
+{
+  "_comment": "Pisos minimos por metrica para `go run ./cmd/evaluate -check`. Calibra estos valores tras el primer `-record` sobre vault_ci/ci_questions.json: fija cada piso un poco por debajo del valor observado para detectar regresiones sin falsos positivos.",
+  "metrics": {
+    "document_recall": 0.80,
+    "recall_at_k": 0.80,
+    "ndcg_at_k": 0.75,
+    "citation_valid_rate": 0.90,
+    "end_to_end_pass_rate": 0.65,
+    "query_rewrite_pass_rate": 1.0
+  }
+}

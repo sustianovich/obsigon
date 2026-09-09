@@ -1,0 +1,44 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  windows-amd64:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.23.x"
+          cache: true
+      - name: Compilar artefacto autónomo
+        shell: pwsh
+        env:
+          CGO_ENABLED: "0"
+        run: |
+          $flags = "-s -w -X 'main.version=${{ github.event.release.tag_name }}' -X 'main.commit=${{ github.sha }}' -X 'main.date=$([DateTime]::UtcNow.ToString('o'))'"
+          go build -trimpath -ldflags $flags -o obsigon-windows-amd64.exe ./cmd/server
+      - name: Empaquetar distribución y checksum
+        shell: pwsh
+        run: |
+          $package = Join-Path $env:RUNNER_TEMP "obsigon-windows-amd64"
+          New-Item -ItemType Directory -Force -Path $package | Out-Null
+          Copy-Item obsigon-windows-amd64.exe,iniciar_windows.bat,iniciar.ps1,.env.example,README.md -Destination $package
+          Copy-Item vault_demo -Destination $package -Recurse
+          Compress-Archive -Path "$package\*" -DestinationPath obsigon-windows-amd64.zip -CompressionLevel Optimal
+          $hash = (Get-FileHash obsigon-windows-amd64.zip -Algorithm SHA256).Hash.ToLowerInvariant()
+          "$hash *obsigon-windows-amd64.zip" | Set-Content -Encoding ascii obsigon-windows-amd64.zip.sha256
+      - name: Publicar en la release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            obsigon-windows-amd64.exe
+            obsigon-windows-amd64.zip
+            obsigon-windows-amd64.zip.sha256

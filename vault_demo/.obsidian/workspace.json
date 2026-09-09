@@ -1,0 +1,194 @@
+{
+  "main": {
+    "id": "7359b5f570abf597",
+    "type": "split",
+    "children": [
+      {
+        "id": "af0cbbf747e6e8fd",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "b7430e9280895c5e",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "90-referencia/Circuito del paciente.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Circuito del paciente"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "93c28c8119e98f61",
+    "type": "split",
+    "children": [
+      {
+        "id": "28bd5b9a49c757c3",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "2bb94a97aa6614c1",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Explorador de archivos"
+            }
+          },
+          {
+            "id": "7d73d398d6807a92",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "`Plantilla_documento_estandar_Obsidian",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Buscar"
+            }
+          },
+          {
+            "id": "57c78921f8b790f4",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Marcadores"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "e50c1acd8a11ad78",
+    "type": "split",
+    "children": [
+      {
+        "id": "357a64e712a9351e",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "0ffda428d389b373",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "10-areas-asistenciales/Urgencias.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Enlaces entrantes de Urgencias"
+            }
+          },
+          {
+            "id": "a656447c6c8c918a",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "10-areas-asistenciales/Urgencias.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Enlaces salientes de Urgencias"
+            }
+          },
+          {
+            "id": "1bbd6ec911513c8b",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Etiquetas"
+            }
+          },
+          {
+            "id": "8a0da7c28bb55e08",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "10-areas-asistenciales/Urgencias.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Esquema de Urgencias"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Abrir selector rápido": false,
+      "graph:Abrir vista gráfica": false,
+      "canvas:Crear nuevo lienzo": false,
+      "daily-notes:Abrir la nota de hoy": false,
+      "templates:Insertar plantilla": false,
+      "command-palette:Abrir paleta de comandos": false
+    }
+  },
+  "active": "b7430e9280895c5e",
+  "lastOpenFiles": [
+    "Admisión y documentación clínica.md",
+    "20-servicios-centrales/Diagnóstico por imagen.md",
+    "20-servicios-centrales/Anatomía patológica.md",
+    "20-servicios-centrales/Laboratorio clínico.md",
+    "20-servicios-centrales/Farmacia hospitalaria.md",
+    "30-servicios-de-soporte/Medicina preventiva y salud pública.md",
+    "00-inicio/Mapa del hospital.md",
+    "30-servicios-de-soporte/Sistemas de información.md",
+    "10-areas-asistenciales/Urgencias.md",
+    "10-areas-asistenciales/Consultas externas.md",
+    "10-areas-asistenciales/Cuidados intensivos.md",
+    "10-areas-asistenciales/Hospitalización.md",
+    "_plantillas/Plantilla_sencilla_Obsidian.md",
+    "_plantillas/Plantilla_documento_estandar_Obsidian.md",
+    "_plantillas/LEEME.md",
+    "90-referencia/Glosario hospitalario.md",
+    "_plantillas",
+    "90-referencia/Circuito del paciente.md",
+    "20-servicios-centrales/Endoscopia digestiva.md",
+    "10-areas-asistenciales/Bloque quirúrgico.md"
+  ]
+}

@@ -1,0 +1,786 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    >
+    <title>Obsidian RAG</title>
+    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+    <link rel="stylesheet" href="/static/styles.css?v=1.3.8">
+</head>
+<body>
+    <div class="desktop">
+        <header class="topbar">
+            <div class="traffic-lights" aria-hidden="true">
+                <span></span><span></span><span></span>
+            </div>
+            <div class="app-title">Obsidian RAG</div>
+            <div class="topbar-actions">
+                <div id="app-version" class="version">Local</div>
+                <button
+                    id="context-indicator"
+                    class="context-indicator"
+                    type="button"
+                    aria-haspopup="dialog"
+                    aria-controls="context-inspector-dialog"
+                    title="Abrir inspector de contexto"
+                >
+                    <span
+                        id="context-indicator-percent"
+                        class="context-indicator-percent"
+                    >
+                        —
+                    </span>
+                    <span
+                        id="context-indicator-model"
+                        class="context-indicator-model"
+                    >
+                        Cargando…
+                    </span>
+                    <span
+                        id="context-indicator-window"
+                        class="context-indicator-window"
+                    >
+                        —/—
+                    </span>
+                </button>
+                <button
+                    id="theme-toggle"
+                    class="theme-toggle"
+                    type="button"
+                    aria-pressed="false"
+                    title="Activar fondo oscuro"
+                >
+                    Oscuro
+                </button>
+            </div>
+        </header>
+
+        <nav class="mobile-tabbar" aria-label="Vistas principales">
+            <button
+                type="button"
+                class="mobile-tab active"
+                data-mobile-tab="chat"
+                aria-pressed="true"
+            >
+                Chat
+            </button>
+            <button
+                type="button"
+                class="mobile-tab"
+                data-mobile-tab="status"
+                aria-pressed="false"
+            >
+                Estado
+            </button>
+            <button
+                type="button"
+                class="mobile-tab"
+                data-mobile-tab="projects"
+                aria-pressed="false"
+            >
+                Proyectos
+            </button>
+            <button
+                type="button"
+                class="mobile-tab"
+                data-mobile-tab="filters"
+                aria-pressed="false"
+            >
+                Filtros
+            </button>
+        </nav>
+
+        <main class="layout">
+            <aside class="sidebar">
+                <section class="brand">
+                    <div class="brand-icon" aria-hidden="true">◇</div>
+                    <div>
+                        <h1>Base documental</h1>
+                    </div>
+                    <button
+                        type="button"
+                        id="sidebar-advanced-toggle"
+                        class="icon-button sidebar-advanced-toggle"
+                        aria-pressed="false"
+                        title="Mostrar ajustes avanzados"
+                        aria-label="Mostrar ajustes avanzados"
+                    >
+                        ⋯
+                    </button>
+                </section>
+
+                <section class="panel status-panel" data-mobile-panel="status">
+                    <h2>Estado</h2>
+                    <dl class="status-grid">
+                        <div>
+                            <dt>Documentos</dt>
+                            <dd id="document-count">—</dd>
+                        </div>
+                        <div>
+                            <dt>Fragmentos</dt>
+                            <dd id="chunk-count">—</dd>
+                        </div>
+                    </dl>
+                    <p id="vault-path" class="path">Cargando ruta…</p>
+                    <p id="watch-status" class="watch-status" hidden></p>
+                    <p
+                        id="graph-health-hint"
+                        class="context-ceiling-hint"
+                        hidden
+                    ></p>
+                    <div class="profile-control">
+                        <label for="chat-profile">
+                            Modelo
+                        </label>
+                        <select id="chat-profile">
+                            <option value="light">
+                                Ligero · qwen3.5:0.8b
+                            </option>
+                            <option value="balanced">
+                                Equilibrado · qwen3.5:2b
+                            </option>
+                            <option value="quality">
+                                Calidad · qwen3.5:4b
+                            </option>
+                            <option value="qwen3_14b">
+                                Qwen3 14B · qwen3:14b
+                            </option>
+                            <option value="llama3">
+                                Llama 3 · llama3:latest
+                            </option>
+                            <option value="gpt_oss" selected>
+                                GPT-OSS · gpt-oss:latest
+                            </option>
+                            <option
+                                id="custom-chat-profile"
+                                value="custom"
+                                disabled
+                                hidden
+                            >
+                                Modelo personalizado
+                            </option>
+                        </select>
+                    </div>
+                    <p id="system-message" class="system-message"></p>
+                    <div class="button-row">
+                        <button
+                            id="select-vault-button"
+                            class="button secondary"
+                        >
+                            Elegir vault
+                        </button>
+                        <button id="index-button" class="button secondary">
+                            Indexar documentos
+                        </button>
+                    </div>
+                </section>
+
+                <section
+                    class="panel projects-panel"
+                    data-mobile-panel="projects"
+                >
+                    <div class="panel-title-row">
+                        <h2>Proyectos</h2>
+                        <div class="project-title-actions">
+                            <button
+                                id="delete-project-button"
+                                class="icon-button danger-icon-button"
+                                type="button"
+                                title="Eliminar proyecto seleccionado"
+                                aria-label="Eliminar proyecto seleccionado"
+                                disabled
+                            >
+                                &times;
+                            </button>
+                            <button
+                                id="new-project-button"
+                                class="icon-button"
+                                type="button"
+                                title="Crear proyecto"
+                                aria-label="Crear proyecto"
+                            >
+                                +
+                            </button>
+                        </div>
+                    </div>
+                    <div id="project-list" class="project-list"></div>
+                    <p id="project-list-empty" class="list-empty">
+                        Cargando proyectos…
+                    </p>
+                    <details
+                        id="project-agent-settings"
+                        class="project-agent-settings advanced-disclosure advanced-only"
+                        open
+                        hidden
+                    >
+                        <summary>
+                            <strong>Agentes</strong>
+                            <span class="agent-settings-column">
+                                Ventana de contexto
+                            </span>
+                            <span id="project-context-overall" hidden>
+                                Sin uso registrado
+                            </span>
+                        </summary>
+                        <div class="project-agent-settings-body">
+                            <label
+                                class="agent-row"
+                                data-agent="verifier"
+                                for="verifier-context-tokens"
+                            >
+                                <span class="agent-row-identity">
+                                    <span class="agent-row-name">
+                                        Verificador
+                                    </span>
+                                    <span
+                                        id="verifier-context-usage"
+                                        class="agent-context-remaining"
+                                    >
+                                        Sin datos
+                                    </span>
+                                </span>
+                                <span
+                                    class="agent-row-context"
+                                >
+                                    <input
+                                        id="verifier-context-tokens"
+                                        type="number"
+                                        min="4096"
+                                        max="262144"
+                                        step="1024"
+                                        value="8192"
+                                        inputmode="numeric"
+                                        disabled
+                                        aria-readonly="true"
+                                        title="Valor fijo del sistema; no editable."
+                                        aria-label="Ventana de contexto del Verificador (fija)"
+                                    >
+                                    <span class="agent-context-unit">
+                                        tokens
+                                    </span>
+                                    <span
+                                        id="verifier-context-value"
+                                        class="context-value"
+                                        aria-hidden="true"
+                                        hidden
+                                    ></span>
+                                </span>
+                            </label>
+                            <div class="agent-row-usage" hidden>
+                                <div class="context-meter">
+                                    <span id="verifier-context-bar"></span>
+                                </div>
+                            </div>
+                            <label
+                                class="agent-row"
+                                data-agent="writer"
+                                for="writer-context-tokens"
+                            >
+                                <span class="agent-row-identity">
+                                    <span class="agent-row-name">
+                                        Redactor
+                                    </span>
+                                    <span
+                                        id="writer-context-usage"
+                                        class="agent-context-remaining"
+                                    >
+                                        Sin datos
+                                    </span>
+                                </span>
+                                <span
+                                    class="agent-row-context"
+                                >
+                                    <input
+                                        id="writer-context-tokens"
+                                        type="number"
+                                        min="4096"
+                                        max="262144"
+                                        step="1024"
+                                        value="16384"
+                                        inputmode="numeric"
+                                        disabled
+                                        aria-readonly="true"
+                                        title="Valor fijo del sistema; no editable."
+                                        aria-label="Ventana de contexto del Redactor (fija)"
+                                    >
+                                    <span class="agent-context-unit">
+                                        tokens
+                                    </span>
+                                    <span
+                                        id="writer-context-value"
+                                        class="context-value"
+                                        aria-hidden="true"
+                                        hidden
+                                    ></span>
+                                </span>
+                            </label>
+                            <div class="agent-row-usage" hidden>
+                                <div class="context-meter">
+                                    <span id="writer-context-bar"></span>
+                                </div>
+                            </div>
+                            <p
+                                id="context-ceiling-hint"
+                                class="context-ceiling-hint"
+                                hidden
+                            ></p>
+                            <p
+                                id="project-memory-summary-status"
+                                class="project-memory-summary-status"
+                                hidden
+                            ></p>
+                            <button
+                                id="save-project-agent-settings"
+                                type="button"
+                                class="button secondary agent-save-button"
+                            >
+                                Guardar cambios
+                            </button>
+                        </div>
+                    </details>
+                </section>
+
+                <section class="panel compact" data-mobile-panel="filters">
+                    <details class="panel-disclosure" open>
+                        <summary>
+                            <h2>Recuperación</h2>
+                        </summary>
+                        <label for="status-filter">Estado documental</label>
+                        <select id="status-filter">
+                            <option value="">Todos</option>
+                            <option value="vigente">Vigente</option>
+                            <option value="borrador">Borrador</option>
+                            <option value="derogado">Derogado</option>
+                        </select>
+
+                        <label for="vigencia-filter">Vigencia temporal</label>
+                        <select id="vigencia-filter">
+                            <option value="">Todas</option>
+                            <option value="no_caducada">
+                                Excluir lo derogado
+                            </option>
+                            <option value="vigente">Sólo vigente</option>
+                            <option value="futura">Sólo futura</option>
+                            <option value="caducada">Sólo derogada</option>
+                        </select>
+
+                        <label id="tag-filter-label">Etiquetas</label>
+                        <details
+                            id="tag-filter-control"
+                            class="tag-filter-control"
+                        >
+                            <summary>
+                                <span>Filtrar etiquetas</span>
+                                <span id="tag-filter-summary">Sin filtro</span>
+                            </summary>
+                            <div class="tag-filter-menu">
+                                <label class="visually-hidden" for="tag-filter-search">
+                                    Buscar etiquetas
+                                </label>
+                                <input
+                                    id="tag-filter-search"
+                                    type="search"
+                                    placeholder="Buscar etiquetas"
+                                    autocomplete="off"
+                                >
+                                <div
+                                    id="tag-filter"
+                                    class="tag-filter-list"
+                                    role="group"
+                                    aria-labelledby="tag-filter-label"
+                                ></div>
+                                <p id="tag-filter-empty" class="tag-filter-empty" hidden>
+                                    No hay etiquetas que coincidan.
+                                </p>
+                                <button
+                                    id="tag-filter-clear"
+                                    class="tag-filter-clear"
+                                    type="button"
+                                    hidden
+                                >
+                                    Limpiar selección
+                                </button>
+                            </div>
+                        </details>
+
+                        <label for="top-k">Fragmentos semánticos</label>
+                        <input
+                            id="top-k"
+                            type="number"
+                            min="1"
+                            max="15"
+                            value="6"
+                        >
+                    </details>
+                </section>
+
+                <section class="panel options-panel" data-mobile-panel="filters">
+                    <details class="panel-disclosure" open>
+                        <summary>
+                            <h2>Opciones</h2>
+                        </summary>
+                        <label class="toggle-row">
+                            <input id="expand-links" type="checkbox" checked>
+                            <span id="expand-links-label">
+                                Seguir enlaces [[...]]
+                            </span>
+                        </label>
+                        <label class="toggle-row">
+                            <input
+                                id="project-verification-enabled"
+                                type="checkbox"
+                                checked
+                            >
+                            <span>Verificar fuentes antes de responder</span>
+                        </label>
+                        <label class="toggle-row">
+                            <input
+                                id="project-memory-enabled"
+                                type="checkbox"
+                                checked
+                            >
+                            <span>Memoria compartida del proyecto</span>
+                        </label>
+                        <label class="toggle-row">
+                            <input id="use-memory" type="checkbox" checked>
+                            <span>Memoria de este hilo</span>
+                        </label>
+                        <p
+                            id="memory-status"
+                            class="memory-status"
+                            aria-live="polite"
+                        >
+                            Preparando memoria&#8230;
+                        </p>
+                    </details>
+                </section>
+            </aside>
+
+            <section
+                id="workspace"
+                class="workspace"
+                data-mobile-panel="chat"
+            >
+                <div class="workspace-topbar">
+                    <div class="workspace-project-summary">
+                        <span>Proyecto activo</span>
+                        <strong id="workspace-active-project">
+                            Cargando…
+                        </strong>
+                    </div>
+                    <div class="workspace-actions">
+                        <details id="history-drawer" class="history-drawer">
+                            <summary>Historial</summary>
+                            <div class="history-panel">
+                                <div
+                                    id="conversation-list"
+                                    class="conversation-list"
+                                ></div>
+                                <p
+                                    id="conversation-list-empty"
+                                    class="list-empty"
+                                >
+                                    Todavía no hay conversaciones aquí.
+                                </p>
+                                <button
+                                    id="conversation-load-more"
+                                    class="button secondary pagination-button hidden"
+                                    type="button"
+                                >
+                                    Cargar más
+                                </button>
+                            </div>
+                        </details>
+                        <button
+                            id="new-conversation-button"
+                            class="button secondary new-thread-button"
+                            type="button"
+                        >
+                            Nueva
+                        </button>
+                    </div>
+                </div>
+                <div id="welcome" class="hero">
+                    <p class="eyebrow">CONSULTA DOCUMENTAL</p>
+                    <h2>Pregunta a tus documentos</h2>
+                    <p>
+                        Consulta tus notas mediante recuperación semántica
+                        local y conserva aquí el historial.
+                    </p>
+                </div>
+
+                <div
+                    id="conversation-header"
+                    class="conversation-header hidden"
+                >
+                    <h2 id="conversation-title"></h2>
+                </div>
+
+                <section
+                    id="chat-thread"
+                    class="chat-thread hidden"
+                ></section>
+
+                <form id="question-form" class="question-card composer">
+                    <textarea
+                        id="question"
+                        rows="3"
+                        required
+                        minlength="3"
+                        placeholder="Ejemplo: ¿Qué sucede después de una mamografía que requiere valoración adicional?"
+                    ></textarea>
+                    <div class="question-actions">
+                        <span
+                            id="query-status"
+                            class="query-status"
+                            aria-live="polite"
+                            aria-atomic="true"
+                        ></span>
+                        <div class="composer-buttons">
+                            <button
+                                id="stop-query-button"
+                                class="button stop-button"
+                                type="button"
+                                hidden
+                            >
+                                Parar
+                            </button>
+                            <button
+                                id="ask-button"
+                                class="button primary"
+                                type="submit"
+                            >
+                                Preguntar
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </section>
+        </main>
+    </div>
+
+    <dialog id="text-dialog" class="modal-dialog">
+        <form id="text-dialog-form" method="dialog">
+            <h2 id="text-dialog-title"></h2>
+            <label for="text-dialog-input" id="text-dialog-label"></label>
+            <input id="text-dialog-input" type="text" maxlength="400">
+            <div class="dialog-actions">
+                <button type="submit" value="cancel" class="button secondary">
+                    Cancelar
+                </button>
+                <button
+                    id="text-dialog-confirm"
+                    type="submit"
+                    value="confirm"
+                    class="button primary"
+                >
+                    Guardar
+                </button>
+            </div>
+        </form>
+    </dialog>
+
+    <dialog id="confirm-dialog" class="modal-dialog">
+        <form id="confirm-dialog-form" method="dialog">
+            <h2 id="confirm-dialog-title"></h2>
+            <p id="confirm-dialog-message"></p>
+            <div class="dialog-actions">
+                <button type="submit" value="cancel" class="button secondary">
+                    Cancelar
+                </button>
+                <button
+                    id="confirm-dialog-confirm"
+                    type="submit"
+                    value="confirm"
+                    class="button primary danger"
+                >
+                    Borrar
+                </button>
+            </div>
+        </form>
+    </dialog>
+
+    <dialog
+        id="context-inspector-dialog"
+        class="modal-dialog context-inspector-dialog"
+        aria-labelledby="context-inspector-title"
+    >
+        <form method="dialog" class="context-inspector-form">
+            <div class="context-inspector-header">
+                <h2 id="context-inspector-title">Inspector de contexto</h2>
+                <button
+                    type="submit"
+                    class="icon-button context-inspector-close"
+                    aria-label="Cerrar inspector de contexto"
+                >
+                    &times;
+                </button>
+            </div>
+            <div class="context-inspector-body">
+                <section
+                    class="context-inspector-section"
+                    aria-labelledby="ci-model-heading"
+                >
+                    <h3 id="ci-model-heading">Modelo activo</h3>
+                    <dl class="context-inspector-grid" id="ci-model-grid">
+                        <div>
+                            <dt>Modelo</dt>
+                            <dd id="ci-model-name">—</dd>
+                        </div>
+                        <div>
+                            <dt>Perfil</dt>
+                            <dd id="ci-model-profile">—</dd>
+                        </div>
+                        <div>
+                            <dt>Capacidad máxima</dt>
+                            <dd id="ci-model-capacity">—</dd>
+                        </div>
+                        <div>
+                            <dt>Fuente</dt>
+                            <dd id="ci-model-source">—</dd>
+                        </div>
+                        <div>
+                            <dt>Verificado</dt>
+                            <dd id="ci-model-verified">—</dd>
+                        </div>
+                    </dl>
+                    <p
+                        id="ci-model-warning"
+                        class="context-inspector-warning"
+                        hidden
+                    ></p>
+                </section>
+
+                <section
+                    class="context-inspector-section"
+                    aria-labelledby="ci-conversation-heading"
+                >
+                    <h3 id="ci-conversation-heading">Conversación</h3>
+                    <p
+                        id="ci-conversation-empty"
+                        class="list-empty"
+                        hidden
+                    >
+                        Abre o inicia una conversación para ver su contexto.
+                    </p>
+                    <dl
+                        class="context-inspector-grid"
+                        id="ci-conversation-grid"
+                        hidden
+                    >
+                        <div>
+                            <dt>Turnos totales almacenados</dt>
+                            <dd id="ci-total-turns">—</dd>
+                        </div>
+                        <div>
+                            <dt>Historial total almacenado</dt>
+                            <dd id="ci-stored-tokens">—</dd>
+                        </div>
+                        <div>
+                            <dt>Turnos recientes incluidos</dt>
+                            <dd id="ci-recent-turns">—</dd>
+                        </div>
+                        <div>
+                            <dt>Historial incluido en el prompt</dt>
+                            <dd id="ci-recent-tokens">—</dd>
+                        </div>
+                        <div>
+                            <dt>Tokens del resumen</dt>
+                            <dd id="ci-summary-tokens">—</dd>
+                        </div>
+                        <div>
+                            <dt>Tokens de memoria del proyecto</dt>
+                            <dd id="ci-project-memory-tokens">—</dd>
+                        </div>
+                        <div>
+                            <dt>Contexto estimado para la próxima respuesta</dt>
+                            <dd id="ci-next-estimate">—</dd>
+                        </div>
+                    </dl>
+                    <p class="context-inspector-note">
+                        No todo el historial almacenado entra en cada
+                        consulta: la aplicación reconstruye el prompt en
+                        cada turno, incorpora como mucho los últimos turnos
+                        recientes y puede sustituir el resto por un resumen.
+                    </p>
+                </section>
+
+                <section
+                    class="context-inspector-section"
+                    aria-labelledby="ci-verifier-heading"
+                    data-role="verifier"
+                >
+                    <h3 id="ci-verifier-heading">Verificador</h3>
+                    <div id="ci-verifier" class="context-inspector-role"></div>
+                </section>
+
+                <section
+                    class="context-inspector-section"
+                    aria-labelledby="ci-writer-heading"
+                    data-role="writer"
+                >
+                    <h3 id="ci-writer-heading">Redactor</h3>
+                    <div id="ci-writer" class="context-inspector-role"></div>
+                </section>
+
+                <p
+                    id="ci-warnings"
+                    class="context-inspector-warning"
+                    hidden
+                ></p>
+            </div>
+        </form>
+    </dialog>
+
+    <dialog
+        id="turn-inspector-dialog"
+        class="modal-dialog context-inspector-dialog"
+        aria-labelledby="turn-inspector-title"
+    >
+        <form method="dialog" class="context-inspector-form">
+            <div class="context-inspector-header">
+                <h2 id="turn-inspector-title">Contexto de este turno</h2>
+                <button
+                    type="submit"
+                    class="icon-button context-inspector-close"
+                    aria-label="Cerrar detalle del turno"
+                >
+                    &times;
+                </button>
+            </div>
+            <div class="context-inspector-body">
+                <p id="turn-inspector-model" class="context-inspector-note">
+                    —
+                </p>
+                <section
+                    class="context-inspector-section"
+                    aria-labelledby="turn-verifier-heading"
+                    data-role="verifier"
+                >
+                    <h3 id="turn-verifier-heading">Verificador</h3>
+                    <div
+                        id="turn-inspector-verifier"
+                        class="context-inspector-role"
+                    ></div>
+                </section>
+                <section
+                    class="context-inspector-section"
+                    aria-labelledby="turn-writer-heading"
+                    data-role="writer"
+                >
+                    <h3 id="turn-writer-heading">Redactor</h3>
+                    <div
+                        id="turn-inspector-writer"
+                        class="context-inspector-role"
+                    ></div>
+                </section>
+            </div>
+        </form>
+    </dialog>
+
+    <script type="module" src="/static/app.js?v=2.0.3"></script>
+</body>
+</html>

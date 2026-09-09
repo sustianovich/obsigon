@@ -1,0 +1,97 @@
+{
+  "description": "Synthetic regression cases for the dedicated vault_ci fixture.",
+  "vault": "vault_ci",
+  "cases": [
+    {
+      "id": "R01-target-population",
+      "question": "¿A qué población se dirige la invitación y cada cuánto se repite?",
+      "expected_paths": ["protocolos/protocolo-cribado.md"],
+      "expected_terms": [
+        ["50 a 69", "50-69"],
+        ["veinticuatro", "24 meses"]
+      ],
+      "forbidden_paths": ["protocolos/protocolo-cribado-v2.md"],
+      "vigencia": "no_caducada"
+    },
+    {
+      "id": "R02-third-reader",
+      "question": "¿Qué ocurre cuando las dos lecturas difieren en categoría?",
+      "expected_paths": ["circuitos/lectura-doble.md"],
+      "expected_terms": [
+        ["tercer lector", "dirimente"],
+        ["cinco dias", "cinco días"]
+      ]
+    },
+    {
+      "id": "R03-code-block",
+      "question": "¿Qué consulta se usa para localizar resultados pendientes de comunicar?",
+      "expected_paths": ["protocolos/protocolo-cribado.md"],
+      "expected_terms": [
+        ["select", "SELECT"],
+        ["fecha_comunicacion"]
+      ]
+    },
+    {
+      "id": "R04-follow-up-rewrite",
+      "question": "¿y qué pasa si difieren?",
+      "memory": "El turno anterior preguntaba por las dos lecturas independientes del circuito de lectura doble.",
+      "expected_rewrite_terms": ["lecturas", "difieren"],
+      "expected_paths": ["circuitos/lectura-doble.md"],
+      "expected_terms": [
+        ["tercer lector", "dirimente"],
+        ["cinco dias", "cinco días"]
+      ]
+    },
+    {
+      "id": "F01-expired-document",
+      "question": "¿Qué población cubría el protocolo anterior y con qué intervalo?",
+      "expected_paths": ["protocolos/protocolo-cribado-v2.md"],
+      "vigencia": "caducada",
+      "expected_terms": [
+        ["45 a 69", "45-69"],
+        ["dieciocho", "18"]
+      ]
+    },
+    {
+      "id": "F02-tag-filter",
+      "question": "requisitos de trazabilidad codificacion e indicadores del marco",
+      "expected_paths": ["referencias/normativa-sicc.md"],
+      "tags": ["sicc-2025"],
+      "forbidden_paths": ["circuitos/gestion-exclusiones.md"]
+    },
+    {
+      "id": "F03-draft-status",
+      "question": "segunda lectura remota para centros sin radiologia en jornada completa",
+      "expected_paths": ["referencias/borrador-teleradiologia.md"],
+      "status": "borrador"
+    },
+    {
+      "id": "E01-link-expansion",
+      "question": "¿Con qué se mide el rendimiento del circuito de lectura doble?",
+      "expected_paths": [
+        "circuitos/lectura-doble.md",
+        "indicadores/indicadores-proceso.md"
+      ],
+      "expand_links": true,
+      "query_type": "relational"
+    },
+    {
+      "id": "A01-out-of-domain",
+      "question": "¿Cuál es el procedimiento de homologación de proveedores de catering hospitalario?",
+      "expect_abstention": true,
+      "query_type": "out_of_domain"
+    },
+    {
+      "id": "A02-unrelated-topic",
+      "question": "¿Qué dice el reglamento sobre el aparcamiento de vehículos del personal?",
+      "expect_abstention": true,
+      "query_type": "out_of_domain"
+    },
+    {
+      "id": "A03-unrelated-maintenance",
+      "question": "protocolo de mantenimiento preventivo de ascensores y montacargas",
+      "expect_abstention": true,
+      "query_type": "out_of_domain"
+    }
+  ]
+}

@@ -1,0 +1,162 @@
+{
+  "descripcion": "Pruebas de robustez ante errores ortograficos frecuentes en consultas sobre el vault hospitalario. Los errores son deliberados y no deben corregirse en el dataset: miden la tolerancia real de la recuperacion semantica.",
+  "vault": "vault-hospital-ejemplo",
+  "cases": [
+    {
+      "id": "HOSP-T01-urjencias-triaje",
+      "question": "¿Cómo se priorisa a los pasientes al llegar a urjencias?",
+      "expected_paths": [
+        "10-areas-asistenciales/Urgencias.md"
+      ],
+      "expected_terms": [
+        [
+          "gravedad"
+        ],
+        [
+          "no por orden de llegada",
+          "no se prioriza por orden de llegada"
+        ]
+      ],
+      "query_type": "factual",
+      "requires_semantic": true
+    },
+    {
+      "id": "HOSP-T02-ospitalisacion-cama",
+      "question": "¿Quién asigna la cama de ospitalisación y qué criterios usa?",
+      "expected_paths": [
+        "10-areas-asistenciales/Hospitalización.md"
+      ],
+      "expected_terms": [
+        [
+          "admisión",
+          "admision"
+        ],
+        [
+          "sexo"
+        ],
+        [
+          "aislamiento"
+        ],
+        [
+          "especialidad"
+        ]
+      ],
+      "query_type": "factual",
+      "requires_semantic": true
+    },
+    {
+      "id": "HOSP-T03-farmasia-validacion",
+      "question": "¿Qué comprueva farmasia antes de que la prescripción llegue a la cama?",
+      "expected_paths": [
+        "20-servicios-centrales/Farmacia hospitalaria.md"
+      ],
+      "expected_terms": [
+        [
+          "dosis"
+        ],
+        [
+          "interacciones"
+        ],
+        [
+          "duplicidades"
+        ],
+        [
+          "alergias"
+        ]
+      ],
+      "query_type": "factual",
+      "requires_semantic": true
+    },
+    {
+      "id": "HOSP-T04-lavoratorio-valor-critico",
+      "question": "¿Qué ase el lavoratorio con un balor crítico después de validarlo?",
+      "expected_paths": [
+        "20-servicios-centrales/Laboratorio clínico.md"
+      ],
+      "expected_terms": [
+        [
+          "aviso inmediato",
+          "avisa de inmediato"
+        ],
+        [
+          "clínico responsable",
+          "clinico responsable"
+        ]
+      ],
+      "query_type": "factual",
+      "requires_semantic": true
+    },
+    {
+      "id": "HOSP-T05-diagnostico-imajen",
+      "question": "¿Qué modalidaddes de imajen no emiten radiación ionisante?",
+      "expected_paths": [
+        "20-servicios-centrales/Diagnóstico por imagen.md"
+      ],
+      "expected_terms": [
+        [
+          "ecografía",
+          "ecografia"
+        ],
+        [
+          "resonancia"
+        ]
+      ],
+      "query_type": "factual",
+      "requires_semantic": true
+    },
+    {
+      "id": "HOSP-T06-biopcia-intraoperatoria",
+      "question": "¿Cuánto tarda una biopcia intraoperatoria y para qué sirbe?",
+      "expected_paths": [
+        "20-servicios-centrales/Anatomía patológica.md"
+      ],
+      "expected_terms": [
+        [
+          "veinte minutos",
+          "20 minutos"
+        ],
+        [
+          "extensión de la cirugía",
+          "extension de la cirugia"
+        ]
+      ],
+      "query_type": "factual",
+      "requires_semantic": true
+    },
+    {
+      "id": "HOSP-T07-preparasion-colonoscopia",
+      "question": "¿Qué pasa si la preparasión para una colonoscopia es defisiente?",
+      "expected_paths": [
+        "20-servicios-centrales/Endoscopia digestiva.md"
+      ],
+      "expected_terms": [
+        [
+          "repetir la prueba",
+          "repetir la colonoscopia"
+        ]
+      ],
+      "query_type": "factual",
+      "requires_semantic": true
+    },
+    {
+      "id": "HOSP-T08-estandares-integrasion",
+      "question": "¿Qué estándares conectan las aplicasiones clínicas en el motor de integrasión?",
+      "expected_paths": [
+        "30-servicios-de-soporte/Sistemas de información.md"
+      ],
+      "expected_terms": [
+        [
+          "HL7"
+        ],
+        [
+          "FHIR"
+        ],
+        [
+          "DICOM"
+        ]
+      ],
+      "query_type": "factual",
+      "requires_semantic": true
+    }
+  ]
+}
